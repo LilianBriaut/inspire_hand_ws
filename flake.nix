@@ -2,7 +2,7 @@
   description = "Flake for inspire_hand_ws with unitree_sdk2_python";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11"; # ou une version plus récente si besoin
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11"; # ou une version plus récente si besoin
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -15,16 +15,16 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             # Dépendances Python de base
-            python3
-            python3Packages.pip
-            python3Packages.setuptools
-            python3Packages.wheel
-            python3Packages.numpy
-            python3Packages.opencv4
-            python3Packages.cyclonedds-python
+            python312
+            python312Packages.pip
+            python312Packages.setuptools
+            python312Packages.wheel
+            python312Packages.numpy
+            python312Packages.opencv4
+            python312Packages.cyclonedds-python
 
             # Intégration directe de unitree_sdk2_python
-            (python3.pkgs.buildPythonPackage rec {
+            (python312.pkgs.buildPythonPackage rec {
               pname = "unitree-sdk2-python";
               version = "0-unstable-2025-03-05";
               src = pkgs.fetchFromGitHub {
@@ -35,11 +35,13 @@
               };
               pyproject = true;
               buildInputs = [
-                python3Packages.cyclonedds-python
-                python3Packages.opencv4
-                python3Packages.numpy
+                python312Packages.setuptools
+                python312Packages.wheel                
+                python312Packages.cyclonedds-python
+                python312Packages.opencv4
+                python312Packages.numpy
               ];
-              pythonRelaxDeps = [ python3Packages.cyclonedds-python ];
+              pythonRelaxDeps = [ python312Packages.cyclonedds-python ];
               pythonImportsCheck = [ "unitree_sdk2py" ];
               meta = {
                 description = "Python interface for Unitree SDK2";
