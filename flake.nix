@@ -8,7 +8,7 @@
   outputs =
     inputs:
     inputs.gepetto.lib.mkFlakoboros inputs (
-      { lib, ... }:
+      { ... }:
       {
         pyPackages.inspire-hand-ws =
           {
@@ -24,7 +24,7 @@
             pyserial,
             unitree-sdk2-python,
           }:
-          buildPythonPackage (finalAttrs: {
+          buildPythonPackage (_finalAttrs: {
             name = "inspire-hand-sdk";
             version = "0-unstable-2026-05-07";
             pyproject = true;
