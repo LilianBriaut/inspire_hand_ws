@@ -3,45 +3,14 @@
 
 # Inspire Hand SDK Usage Guide
 
-## Virtual Environment Management
-
-It is recommended to use `venv` for managing the virtual environment:
-
-```bash
-python -m venv venv  # or  Unzip venv_x86.tar.xz, and place the.venv in inspire_hand_ws/.venv
-
-# Then execute the script to modify venv:
-python update_venv_path.py.venv
-python update_bin_files.py.venv 
-
-source venv/bin/activate  # Activate the virtual environment for Linux/MacOS
-
+```
+direnv allow
+python -m venv --system-site-packages .venv
+source .venv/bin/activate
+pip install ./inspire_hand_sdk
+python -c "import inspire_sdkpy; print(inspire_sdkpy.__file__)"
 ```
 
-## Installation
-
-1. When configuring the environment yourself, you need to install project dependencies; if you use Unzip venv_x86.tar.xz to set up the environment, you do not need to run the following command:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-2. Initialize and update submodules:
-
-    ```bash
-    git submodule init  # Initialize submodules
-    git submodule update  # Update submodules to the latest version
-    ```
-
-3. Install the two SDKs:
-
-    ```bash
-    cd unitree_sdk2_python
-    pip install -e .
-
-    cd ../inspire_hand_sdk
-    pip install -e .
-    ```
 
 ## Control Modes
 
