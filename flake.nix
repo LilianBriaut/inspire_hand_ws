@@ -19,6 +19,7 @@
             numpy,
             pyqt5,
             pyqtgraph,
+            qt5,
             colorcet,
             pymodbus,
             pyserial,
@@ -42,6 +43,11 @@
             ];
             pythonRelaxDeps = [ "pymodbus" ];
             pythonImportsCheck = [ "inspire_sdkpy" ];
+            passthru.qt-env = lib.makeSearchPathOutput "bin" qt5.qtbase.qtPluginPrefix [
+              qt5.qtbase
+              qt5.qtdeclarative
+              qt5.qtwayland
+            ];
           });
       }
     );
