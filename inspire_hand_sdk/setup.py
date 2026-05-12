@@ -15,8 +15,7 @@ setup(
         "PyQt5",
         "pyqtgraph",
         "colorcet",
-        # "pymodbus==3.6.9", # TODO ???
-        "pymodbus",
+        "pymodbus==3.6.9",
         "pyserial",
     ],
 )
