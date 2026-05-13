@@ -10,6 +10,22 @@
     inputs.gepetto.lib.mkFlakoboros inputs (
       { ... }:
       {
+        pyOverrideAttrs.pymodbus =
+          {
+            drv-final,
+            drv-prev,
+            pkgs-final,
+            ...
+          }:
+          {
+            version = "3.6.9";
+            src = pkgs-final.fetchFromGitHub {
+              inherit (drv-prev.src) owner repo;
+              tag = "v${drv-final.version}";
+              hash = "sha256-ScqxDO0hif8p3C6+vvm7FgSEQjCXBwUPOc7Y/3OfkoI=";
+            };
+            disabledTestPaths = [ ];
+          };
         pyPackages.inspire-hand-ws =
           {
             lib,
@@ -19,6 +35,7 @@
             numpy,
             pyqt5,
             pyqtgraph,
+            qt5,
             colorcet,
             pymodbus,
             pyserial,
@@ -42,6 +59,11 @@
             ];
             pythonRelaxDeps = [ "pymodbus" ];
             pythonImportsCheck = [ "inspire_sdkpy" ];
+            passthru.qt-env = lib.makeSearchPathOutput "bin" qt5.qtbase.qtPluginPrefix [
+              qt5.qtbase
+              qt5.qtdeclarative
+              qt5.qtwayland
+            ];
           });
       }
     );
