@@ -10,6 +10,7 @@
     inputs.gepetto.lib.mkFlakoboros inputs (
       { ... }:
       {
+        extraPyPackages = [ "pymodbus" ];
         pyPackages.pymodbus_369 =
           {
             pymodbus,
