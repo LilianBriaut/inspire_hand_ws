@@ -10,22 +10,22 @@
     inputs.gepetto.lib.mkFlakoboros inputs (
       { ... }:
       {
-        pyOverrideAttrs.pymodbus =
+        pyPackages.pymodbus_369 =
           {
-            drv-final,
-            drv-prev,
-            pkgs-final,
-            ...
+            pymodbus,
+            fetchFromGitHub,
           }:
-          {
-            version = "3.6.9";
-            src = pkgs-final.fetchFromGitHub {
-              inherit (drv-prev.src) owner repo;
-              tag = "v${drv-final.version}";
-              hash = "sha256-ScqxDO0hif8p3C6+vvm7FgSEQjCXBwUPOc7Y/3OfkoI=";
-            };
-            disabledTestPaths = [ ];
-          };
+          pymodbus.overrideAttrs (
+            drv-final: drv-prev: {
+              version = "3.6.9";
+              src = fetchFromGitHub {
+                inherit (drv-prev.src) owner repo;
+                tag = "v${drv-final.version}";
+                hash = "sha256-ScqxDO0hif8p3C6+vvm7FgSEQjCXBwUPOc7Y/3OfkoI=";
+              };
+              disabledTestPaths = [ ];
+            }
+          );
         pyPackages.inspire-hand-ws =
           {
             lib,
@@ -37,7 +37,7 @@
             pyqtgraph,
             qt5,
             colorcet,
-            pymodbus,
+            pymodbus_369,
             pyserial,
             unitree-sdk2-python,
           }:
@@ -53,7 +53,7 @@
               pyqt5
               pyqtgraph
               colorcet
-              pymodbus
+              pymodbus_369
               pyserial
               unitree-sdk2-python
             ];
