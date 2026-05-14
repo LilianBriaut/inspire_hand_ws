@@ -11,6 +11,26 @@ pip install ./inspire_hand_sdk
 python -c "import inspire_sdkpy; print(inspire_sdkpy.__file__)"
 ```
 
+## nix
+
+### To allow qt_plugin:
+```
+nix eval .#py-inspire-hand-ws.qt-env
+```
+
+gives for instance:
+```
+"/nix/store/26ag85j9fz7ps88f5ir4lia10kyzv30g-qtbase-5.15.18-bin/lib/qt-5.15.18/plugins:/nix/store/fzqmazjp20fzhwkkngnqcdpjvjal0jyr-qtdeclarative-5.15.18-bin/lib/qt-5.15.18/plugins:/nix/store/54hacypiy98kw4aq3jnim5srxb20cz6n-qtwayland-5.15.18-bin/lib/qt-5.15.18/plugins"
+```
+then
+```
+export QT_PLUGIN_PATH=/nix/store/26ag85j9fz7ps88f5ir4lia10kyzv30g-qtbase-5.15.18-bin/lib/qt-5.15.18/plugins:/nix/store/fzqmazjp20fzhwkkngnqcdpjvjal0jyr-qtdeclarative-5.15.18-bin/lib/qt-5.15.18/plugins:/nix/store/54hacypiy98kw4aq3jnim5srxb20cz6n-qtwayland-5.15.18-bin/lib/qt-5.15.18/plugins
+```
+### run a script:
+To run a script, for instance ```init_set_inspire_hand.py```, it is possible to use ```nix shell```:
+```
+nix shell  --command python inspire_hand_sdk/example/init_set_inspire_hand.py
+```
 
 ## Control Modes
 
