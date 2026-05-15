@@ -199,16 +199,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1778078202,
-        "narHash": "sha256-dNQr2QnnkfCuUbvSfzhDbsolDjfMmmLtPgu2VcWjsD4=",
+        "lastModified": 1778843352,
+        "narHash": "sha256-o3fXATsYUTbOElMpu6lRxpdsqn4WD/M6qxrXfUjU24c=",
         "owner": "gepetto",
         "repo": "nix",
-        "rev": "26b8ff2c061a0263cbaad8d6d9fb4ea8b2549d35",
+        "rev": "db8953657179156d72b636a8da81670ea8e1616b",
         "type": "github"
       },
       "original": {
         "owner": "gepetto",
-        "ref": "pull/311/merge",
         "repo": "nix",
         "type": "github"
       }
