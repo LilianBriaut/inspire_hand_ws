@@ -7,8 +7,7 @@ import time
 if __name__ == "__main__":
     
     
-    # handler=inspire_sdk.ModbusDataHandler(ip=inspire_hand_defaut.defaut_ip,LR='r',device_id=1)
-    handler=inspire_sdk.ModbusDataHandler(ip='192.168.123.210',LR='r',device_id=1)
+    handler=inspire_sdk.ModbusDataHandler(ip=inspire_hand_defaut.defaut_ip,LR='r',device_id=1)
     time.sleep(0.5)
 
     call_count = 0  # 记录调用次数

@@ -223,5 +223,5 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     # window = MainWindow(ip=defaut_ip)
-    window = MainWindow(ip='192.168.123.211')
+    window = MainWindow(ip='192.168.11.210')
     sys.exit(app.exec_())
