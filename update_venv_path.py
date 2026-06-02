@@ -43,8 +43,6 @@ def update_venv_path(venv_dir):
                     lines = content.splitlines()
                     for i, line in enumerate(lines):
                         if line.startswith('setenv VIRTUAL_ENV'):
-                            parts = line.split('"')[-2]  # Get the path part
-                            old_path = parts[1]
                             lines[i] = f'setenv VIRTUAL_ENV "{venv_dir}"'  # Update with the new path
                             print(f"Updated setenv VIRTUAL_ENV in: {script}")
                             break
@@ -58,7 +56,6 @@ def update_venv_path(venv_dir):
                     lines = content.splitlines()
                     for i, line in enumerate(lines):
                         if line.startswith('set -gx VIRTUAL_ENV'):
-                            parts = line.split('"')[-2]  # Get the path part
                             lines[i] = f'set -gx VIRTUAL_ENV "{venv_dir}"'  # Update with the new path
                             print(f"Updated set -gx VIRTUAL_ENV in: {script}")
                             break

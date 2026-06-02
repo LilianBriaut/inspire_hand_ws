@@ -14,8 +14,8 @@ def worker(ip,LR,name,network=None):
 if __name__ == "__main__":
     # 使用默认IP地址的示例
 
-    process_r = multiprocessing.Process(target=worker, args=('192.168.123.211','r',"右手进程"))
-    process_l = multiprocessing.Process(target=worker, args=('192.168.123.210','l',"左手进程"))
+    process_r = multiprocessing.Process(target=worker, args=('192.168.123.210','r',"右手进程"))
+    process_l = multiprocessing.Process(target=worker, args=('192.168.123.211','l',"左手进程"))
 
     process_r.start()
     time.sleep(0.6)

@@ -1,0 +1,109 @@
+{
+    "degree": 2,
+    "points": [
+        {
+            "fsr": 4088.35,
+            "fsr_std": 0.4769696007084729,
+            "motor_force": -67.0,
+            "motor_pos": 682.0,
+            "tactile_tip": 0.0,
+            "tactile_top": 357.2
+        },
+        {
+            "fsr": 3393.4,
+            "fsr_std": 3.5128336140500593,
+            "motor_force": 272.4,
+            "motor_pos": 908.25,
+            "tactile_tip": 0.0,
+            "tactile_top": 11608.05
+        },
+        {
+            "fsr": 1975.25,
+            "fsr_std": 0.9937303457175896,
+            "motor_force": 399.1,
+            "motor_pos": 968.0,
+            "tactile_tip": 0.0,
+            "tactile_top": 23567.5
+        },
+        {
+            "fsr": 874.6,
+            "fsr_std": 1.1135528725660044,
+            "motor_force": 655.95,
+            "motor_pos": 994.0,
+            "tactile_tip": 0.0,
+            "tactile_top": 42058.05
+        },
+        {
+            "fsr": 469.6,
+            "fsr_std": 0.58309518948453,
+            "motor_force": 1069.0,
+            "motor_pos": 1028.0,
+            "tactile_tip": 0.0,
+            "tactile_top": 54377.75
+        },
+        {
+            "fsr": 438.2,
+            "fsr_std": 0.5099019513592785,
+            "motor_force": 1027.0,
+            "motor_pos": 1047.0,
+            "tactile_tip": 0.0,
+            "tactile_top": 55069.1
+        },
+        {
+            "fsr": 1204.65,
+            "fsr_std": 1.1079259903080168,
+            "motor_force": 437.0,
+            "motor_pos": 1002.0,
+            "tactile_tip": 0.0,
+            "tactile_top": 37740.2
+        },
+        {
+            "fsr": 4087.45,
+            "fsr_std": 0.8046738469715542,
+            "motor_force": 75.05,
+            "motor_pos": 947.0,
+            "tactile_tip": 0.0,
+            "tactile_top": 723.2
+        },
+        {
+            "fsr": 4087.2,
+            "fsr_std": 0.8124038404635961,
+            "motor_force": 88.1,
+            "motor_pos": 947.0,
+            "tactile_tip": 0.0,
+            "tactile_top": 671.35
+        },
+        {
+            "fsr": 4087.3,
+            "fsr_std": 0.714142842854285,
+            "motor_force": 88.6,
+            "motor_pos": 947.0,
+            "tactile_tip": 0.0,
+            "tactile_top": 677.3
+        }
+    ],
+    "p_force": [
+        7.493382507422923e-05,
+        -0.584401809515317,
+        1212.3160085130833
+    ],
+    "p_pos": [
+        1.5915089232223108e-06,
+        -0.04884511763336424,
+        1054.1932578693743
+    ],
+    "p_tip": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "p_top": [
+        0.002034389040163421,
+        -23.586272687474565,
+        63689.625339098275
+    ],
+    "r2_force": 0.9203666700644813,
+    "r2_pos": 0.4333066944281033,
+    "r2_tip": 1.0,
+    "r2_top": 0.9926416244067001
+}
