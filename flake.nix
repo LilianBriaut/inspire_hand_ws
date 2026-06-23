@@ -14,6 +14,7 @@
           { pkgs-final, ... }:
           {
             src = lib.cleanSource ./inspire_hand_sdk;
+            sourceRoot = "source";
 
             env.QT_PLUGIN_PATH = lib.makeSearchPathOutput "bin" pkgs-final.qt5.qtbase.qtPluginPrefix [
               pkgs-final.qt5.qtbase
