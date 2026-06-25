@@ -3,16 +3,16 @@ from unitree_sdk2py.core.channel import ChannelSubscriber, ChannelFactoryInitial
 from inspire_sdkpy import inspire_hand_defaut,inspire_dds
 
 import numpy as np
-import colorcet  
+import colorcet
 import time
 
 import threading
 
 
 class DDSHandler():
-   
+
     def __init__(self,network=None,sub_touch=True,LR='r'):
-        super().__init__()  # 调用父类的 __init__ 方法
+        super().__init__()  # Appel du __init__ de la classe parente
         if network ==None:
             ChannelFactoryInitialize(0)
         else:
@@ -21,7 +21,7 @@ class DDSHandler():
         if sub_touch:
             self.sub_touch = ChannelSubscriber("rt/inspire_hand/touch/"+LR, inspire_dds.inspire_hand_touch)
             self.sub_touch.Init(self.update_data_touch, 10)
-        
+
         self.sub_states = ChannelSubscriber("rt/inspire_hand/state/"+LR, inspire_dds.inspire_hand_state)
         self.sub_states.Init(self.update_data_state, 10)
         self.touch={}
@@ -29,19 +29,19 @@ class DDSHandler():
         self.data_touch_lock = threading.Lock()
         self.data_state_lock = threading.Lock()
 
-    # 更新图形的函数
+    # Fonction de mise à jour des données graphiques
     def update_data_touch(self,msg:inspire_dds.inspire_hand_touch):
         with self.data_touch_lock:
-            start_time = time.time()  # 记录开始时间
+            start_time = time.time()  # Enregistrer le temps de début
             for i, (name, addr, length, size,var) in enumerate(self.data):
                 value=getattr(msg,var)
                 if value is not None:
                     matrix = np.array(value).reshape(size)
                     self.touch[var]=matrix
-            end_time = time.time()  # 记录结束时间
-            elapsed_time = end_time - start_time  # 计算耗时
-            # print(f"Data update time: {elapsed_time:.6f} seconds")  # 打印耗时
-            
+            end_time = time.time()  # Enregistrer le temps de fin
+            elapsed_time = end_time - start_time  # Calculer la durée
+            # print(f"Durée de mise à jour des données : {elapsed_time:.6f} secondes")
+
     def update_data_state(self,states_msg:inspire_dds.inspire_hand_state):
         with self.data_state_lock:
             self.states= {
@@ -66,7 +66,7 @@ from inspire_sdkpy import qt_tabs,inspire_sdk,inspire_hand_defaut
 if __name__ == "__main__":
     ddsHandler = DDSHandler(sub_touch=False)
     app = qt_tabs.QApplication(sys.argv)
-    window = qt_tabs.MainWindow(data_handler=ddsHandler,dt=80,name="DDS Subscribe",Plot_touch=False) # Update every 50 ms
+    window = qt_tabs.MainWindow(data_handler=ddsHandler,dt=80,name="Abonnement DDS",Plot_touch=False) # Mise à jour toutes les 80 ms
     window.reflash()
     window.show()
     sys.exit(app.exec_())

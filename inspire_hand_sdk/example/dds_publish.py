@@ -14,10 +14,10 @@ if __name__ == '__main__':
         ChannelFactoryInitialize(0, sys.argv[1])
     else:
         ChannelFactoryInitialize(0)
-    # Create a publisher to publish the data defined in UserData class
+    # Créer un publisher pour publier les données définies dans la classe UserData
     pubr = ChannelPublisher("rt/inspire_hand/ctrl/r", inspire_dds.inspire_hand_ctrl)
     pubr.Init()
-    
+
     publ = ChannelPublisher("rt/inspire_hand/ctrl/l", inspire_dds.inspire_hand_ctrl)
     publ.Init()
     cmd = inspire_hand_defaut.get_inspire_hand_ctrl()
@@ -38,15 +38,15 @@ if __name__ == '__main__':
 
     time.sleep(3.0)
 
-    for cnd in range(100000): 
+    for cnd in range(100000):
 
-            # 寄存器起始地址，0x05CE 对应的是 1486
-        start_address = 1486            
-        num_registers = 6  # 6 个寄存器
-        # 生成要写入的值列表，每个寄存器为一个 short 值
+            # Adresse de départ des registres, 0x05CE correspond à 1486
+        start_address = 1486
+        num_registers = 6  # 6 registres
+        # Générer la liste des valeurs à écrire, chaque registre est une valeur short
 
         if (cnd+1) % 10 == 0:
-            short_value = 1000-short_value  # 要写入的 short 值
+            short_value = 1000-short_value  # Valeur short à écrire
 
 
 
@@ -58,31 +58,31 @@ if __name__ == '__main__':
         value_to_write_np=np.clip(value_to_write_np,200,800)
         # value_to_write_np[3]=800
 
-        # 将组合模式按二进制方式实现
-        # mode 0：0000（无操作）
-        # mode 1：0001（角度）
-        # mode 2：0010（位置）
-        # mode 3：0011（角度 + 位置）
-        # mode 4：0100（力控）
-        # mode 5：0101（角度 + 力控）
-        # mode 6：0110（位置 + 力控）
-        # mode 7：0111（角度 + 位置 + 力控）
-        # mode 8：1000（速度）
-        # mode 9：1001（角度 + 速度）
-        # mode 10：1010（位置 + 速度）
-        # mode 11：1011（角度 + 位置 + 速度）
-        # mode 12：1100（力控 + 速度）
-        # mode 13：1101（角度 + 力控 + 速度）
-        # mode 14：1110（位置 + 力控 + 速度）
-        # mode 15：1111（角度 + 位置 + 力控 + 速度）  
+        # Modes combinés implémentés en binaire :
+        # mode 0 : 0000 (aucune opération)
+        # mode 1 : 0001 (angle)
+        # mode 2 : 0010 (position)
+        # mode 3 : 0011 (angle + position)
+        # mode 4 : 0100 (contrôle en force)
+        # mode 5 : 0101 (angle + force)
+        # mode 6 : 0110 (position + force)
+        # mode 7 : 0111 (angle + position + force)
+        # mode 8 : 1000 (vitesse)
+        # mode 9 : 1001 (angle + vitesse)
+        # mode 10 : 1010 (position + vitesse)
+        # mode 11 : 1011 (angle + position + vitesse)
+        # mode 12 : 1100 (force + vitesse)
+        # mode 13 : 1101 (angle + force + vitesse)
+        # mode 14 : 1110 (position + force + vitesse)
+        # mode 15 : 1111 (angle + position + force + vitesse)
         cmd.angle_set=value_to_write_np.tolist()
         cmd.mode=0b0001
-        #Publish message
+        # Publier le message
         if  publ.Write(cmd) and pubr.Write(cmd):
-            # print("Publish success. msg:", cmd.crc)
+            # print("Publication réussie. msg:", cmd.crc)
             pass
         else:
-            print("Waitting for subscriber.")
+            print("En attente d'un subscriber.")
 
         time.sleep(0.1)
-        
+
