@@ -1,0 +1,43 @@
+rh56dftp_description
+====================
+
+This package adapts and builds upon third-party open-source work. Attribution
+below is required by the respective licenses and by project policy.
+
+--------------------------------------------------------------------------------
+1. rh56dfx_description  (URDF/xacro, meshes, joint config — reused/adapted)
+--------------------------------------------------------------------------------
+   Source : https://github.com/ookkshirsagar/rh56dfx_description
+   Author : Omkar Chandrakant Kshirsagar (Fraunhofer IPA)
+   License: MIT (see ./LICENSE)
+
+   Reused VERBATIM:
+     - meshes/left/**, meshes/right/**            (all visual + collision STL)
+   Reused with MODIFICATION:
+     - urdf/rh56dftp_macro.xacro   (from urdf/rh56dfx_macro.xacro):
+         renamed macro rh56dfx_hand -> rh56dftp_hand and the mesh package path
+         rh56dfx_description -> rh56dftp_description; normalized CRLF->LF;
+         removed one stray 'ac' token (source typo). Kinematics — joints, limits,
+         mimic tags, inertials — are UNCHANGED.
+     - urdf/rh56dftp.xacro         (from urdf/rh56dfx.xacro): renamed, fixed the
+         world-link child reference, default prefix set to "<side>_".
+   NOT reused:
+     - the ROS2 ament packaging (package.xml, CMakeLists.txt, launch/, rviz/,
+       config/ros2_controllers.yaml, MoveIt joint_limits/joint_names.yaml). This
+       package is deliberately framework-agnostic (no ROS dependency).
+
+--------------------------------------------------------------------------------
+2. inspire-hand-rh56-py  (tactile protocol reference)
+--------------------------------------------------------------------------------
+   Source : https://github.com/yuzhench/inspire-hand-rh56-py
+   Used as a REFERENCE ONLY for the RH56DFTP tactile (Modbus) protocol. No code
+   was copied. The tactile region map in tactile/tactile_layout.yaml is derived
+   from the DDS driver shipped in this workspace
+   (inspire_hand_sdk/inspire_sdkpy/inspire_hand_defaut.py :: data_sheet), which
+   is the live source of truth for the sensor register layout.
+
+--------------------------------------------------------------------------------
+Added by rh56dftp_description (original work, MIT):
+   urdf/tactile_frames.xacro, tactile/tactile_layout.yaml,
+   config/actuator_mapping.yaml, tools/build.py, urdf/rh56dftp_{left,right}.urdf,
+   README.md, NOTICE.

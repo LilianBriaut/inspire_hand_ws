@@ -1,0 +1,48 @@
+# =============================================================================
+# RH56DFTP actuator mapping  —  URDF joints <-> Inspire DDS register order
+# =============================================================================
+#
+# Bridges this description's joint names to the 6-DOF command/state vectors used
+# by the DDS driver (inspire_hand_ws/inspire_hand_sdk) and the h1v2 deployment
+# controller (packages/robot_deploy/.../InspireHand_policy.py).
+#
+# INSPIRE REGISTER ORDER (indices 0..5 of pos_set / angle_set / pos_act / ...):
+#     [pinky, ring, middle, index, thumb_bend, thumb_rot]
+# Source: Inspire FTP user manual §2.6.11 ANGLE_SET(m), registers 1486-1497,
+# cross-checked against InspireHand_policy._compute_hand_cmd (line ~98-110).
+# Tactile finger order matches: f1=pinky, f2=ring, f3=middle, f4=index, f5=thumb.
+#
+# THUMB
+# -----
+#   thumb_bend = flexion toward the palm  -> URDF joint thumb_2 (drives the
+#                mimic chain thumb_2 -> thumb_3 -> thumb_4)
+#   thumb_rot  = lateral rotation / opposition -> URDF joint thumb_1 (independent)
+#
+# The 6 controllable finger DOF are the *_1 joints (index/middle/ring/little)
+# plus thumb_1/thumb_2. Distal phalanges follow via URDF <mimic> and must NOT be
+# commanded directly. Joint names below are the suffix; the real joint is
+# <prefix><name> (e.g. left_index_1_joint).
+
+# Maps DDS register index -> actuated URDF joint (suffix, without side prefix).
+inspire_register_to_joint:
+  0: little_1_joint    # pinky
+  1: ring_1_joint      # ring
+  2: middle_1_joint    # middle
+  3: index_1_joint     # index
+  4: thumb_2_joint     # thumb_bend (flexion)
+  5: thumb_1_joint     # thumb_rot  (opposition)
+
+# Distal joints coupled via URDF <mimic> (never commanded directly).
+mimic_joints:
+  index_2_joint:  {follows: index_1_joint}
+  middle_2_joint: {follows: middle_1_joint}
+  ring_2_joint:   {follows: ring_1_joint}
+  little_2_joint: {follows: little_1_joint}
+  thumb_3_joint:  {follows: thumb_2_joint}
+  thumb_4_joint:  {follows: thumb_3_joint}
+
+# Extra wrist DOF present in this URDF but NOT part of the Inspire 6-DOF register
+# set (the physical RH56DFTP does not actuate these via the DDS command vector).
+non_inspire_joints:
+  - wrist_yaw_joint
+  - hand_base_joint

@@ -1,0 +1,80 @@
+# =============================================================================
+# RH56DFTP tactile skin layout  —  CANONICAL SOURCE OF TRUTH
+# =============================================================================
+#
+# One entry per tactile region of the Inspire Hand RH56DFTP touch sensor.
+# This file is the single source of truth consumed by tools/build.py to generate
+#   * urdf/tactile_frames.xacro         (a fixed frame per region, for RViz/xacro)
+#   * the tactile frames appended to the expanded plain URDFs (Pinocchio/MuJoCo)
+#
+# PROVENANCE
+# ----------
+# The dds_field / grid / modbus_addr values are copied verbatim from the
+# working DDS driver's register map:
+#   inspire_hand_ws/inspire_hand_sdk/inspire_sdkpy/inspire_hand_defaut.py  (data_sheet)
+# and match the DDS message inspire_hand_touch.idl. The live driver reads these
+# Modbus registers (0x0BB8.. / 3000..) and publishes them on rt/inspire_hand/touch/{l,r}.
+# Consumers reshape each field to `grid` (rows, cols) exactly as the driver does.
+#
+# TAXEL COUNT
+# -----------
+# Sum over all 17 regions = 1062 taxels (see totals at bottom).
+# NOTE: the project brief quotes 1185 cells. That figure does NOT match the
+# register map shipped in the SDK (1062). Treated per decision as: follow the
+# SDK layout (1062). The 1185 figure is flagged for hardware-datasheet
+# verification (inspire_hand_ws/inspire_R1/*.pdf) and is NOT reconciled here.
+#
+# FINGER NAMING  (DDS field  ->  URDF finger)
+# -------------------------------------------
+#   fingerone   = 小拇指 = little (pinky)
+#   fingertwo   = 无名指 = ring
+#   fingerthree = 中指   = middle
+#   fingerfour  = 食指   = index
+#   fingerfive  = 大拇指 = thumb
+#
+# FRAME PLACEMENT
+# ---------------
+# `parent_link` is the semantically closest existing URDF link (suffix only;
+# the real link is <prefix><parent_link>, e.g. left_index_tip). Frames are
+# anchored at the parent link origin (placement: nominal). Precise metric
+# pose/orientation of each pad on its link is deferred refinement pending the
+# RH56DFTP datasheet geometry — see README "Tactile frames".
+# =============================================================================
+
+frame_suffix: _touch          # frame link name = <prefix><region>_touch (region = key below)
+placement: nominal            # frames sit at parent-link origin; refine against datasheet
+
+regions:
+  # ---- little / pinky (fingerone) ------------------------------------------
+  little_tip:   {dds_field: fingerone_tip_touch,     parent_link: little_tip, grid: [3, 3],  taxels: 9,  modbus_addr: 3000}
+  little_top:   {dds_field: fingerone_top_touch,     parent_link: little_2,   grid: [12, 8], taxels: 96, modbus_addr: 3018}
+  little_palm:  {dds_field: fingerone_palm_touch,    parent_link: little_1,   grid: [10, 8], taxels: 80, modbus_addr: 3210}
+
+  # ---- ring (fingertwo) ----------------------------------------------------
+  ring_tip:     {dds_field: fingertwo_tip_touch,     parent_link: ring_tip,   grid: [3, 3],  taxels: 9,  modbus_addr: 3370}
+  ring_top:     {dds_field: fingertwo_top_touch,     parent_link: ring_2,     grid: [12, 8], taxels: 96, modbus_addr: 3388}
+  ring_palm:    {dds_field: fingertwo_palm_touch,    parent_link: ring_1,     grid: [10, 8], taxels: 80, modbus_addr: 3580}
+
+  # ---- middle (fingerthree) ------------------------------------------------
+  middle_tip:   {dds_field: fingerthree_tip_touch,   parent_link: middle_tip, grid: [3, 3],  taxels: 9,  modbus_addr: 3740}
+  middle_top:   {dds_field: fingerthree_top_touch,   parent_link: middle_2,   grid: [12, 8], taxels: 96, modbus_addr: 3758}
+  middle_palm:  {dds_field: fingerthree_palm_touch,  parent_link: middle_1,   grid: [10, 8], taxels: 80, modbus_addr: 3950}
+
+  # ---- index (fingerfour) --------------------------------------------------
+  index_tip:    {dds_field: fingerfour_tip_touch,    parent_link: index_tip,  grid: [3, 3],  taxels: 9,  modbus_addr: 4110}
+  index_top:    {dds_field: fingerfour_top_touch,    parent_link: index_2,    grid: [12, 8], taxels: 96, modbus_addr: 4128}
+  index_palm:   {dds_field: fingerfour_palm_touch,   parent_link: index_1,    grid: [10, 8], taxels: 80, modbus_addr: 4320}
+
+  # ---- thumb (fingerfive) --------------------------------------------------
+  thumb_tip:    {dds_field: fingerfive_tip_touch,    parent_link: thumb_tip,  grid: [3, 3],  taxels: 9,  modbus_addr: 4480}
+  thumb_top:    {dds_field: fingerfive_top_touch,    parent_link: thumb_4,    grid: [12, 8], taxels: 96, modbus_addr: 4498}
+  thumb_middle: {dds_field: fingerfive_middle_touch, parent_link: thumb_3,    grid: [3, 3],  taxels: 9,  modbus_addr: 4690}
+  thumb_palm:   {dds_field: fingerfive_palm_touch,   parent_link: thumb_2,    grid: [12, 8], taxels: 96, modbus_addr: 4708}
+
+  # ---- palm (掌心) ---------------------------------------------------------
+  palm:         {dds_field: palm_touch,              parent_link: palm,       grid: [14, 8], taxels: 112, modbus_addr: 4900}
+
+# --- totals (must stay consistent; verified by tools/build.py --check) -------
+totals:
+  regions: 17
+  taxels: 1062

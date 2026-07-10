@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!--
+  rh56dftp.xacro — top-level assembly of the Inspire Hand RH56DFTP description.
+
+  Instantiates the kinematic macro (rh56dftp_macro.xacro, adapted from
+  rh56dfx_description — see that file's header for MIT attribution) plus the
+  tactile skin frames (tactile_frames.xacro, generated from
+  tactile/tactile_layout.yaml by tools/build.py).
+
+  Standard instantiation is `side:=left prefix:=left_` (prefix MUST equal
+  "<side>_" so that link names and mesh filenames — e.g. left_index_1.STL —
+  resolve). Consumers with no ROS/xacro can use the pre-expanded plain URDFs
+  urdf/rh56dftp_left.urdf and urdf/rh56dftp_right.urdf instead.
+-->
+<robot name="rh56dftp" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ================= ARGUMENTS ================= -->
+
+  <xacro:arg name="side" default="left"/>
+  <xacro:arg name="prefix" default="left_"/>
+  <xacro:arg name="use_world" default="false"/>
+
+  <xacro:property name="side_s" value="$(arg side)"/>
+  <xacro:property name="prefix_p" value="$(arg prefix)"/>
+  <xacro:property name="world_w" value="$(arg use_world)"/>
+
+  <!-- ================= INCLUDES ================= -->
+
+  <xacro:include filename="$(find rh56dftp_description)/urdf/rh56dftp_macro.xacro"/>
+  <xacro:include filename="$(find rh56dftp_description)/urdf/tactile_frames.xacro"/>
+
+  <!-- ================= OPTIONAL WORLD LINK ================= -->
+
+  <xacro:if value="${world_w}">
+    <link name="world"/>
+    <joint name="world_joint" type="fixed">
+      <parent link="world"/>
+      <child link="${prefix_p}hand_root"/>
+    </joint>
+  </xacro:if>
+
+  <!-- ================= INSTANTIATE HAND + TACTILE SKIN ================= -->
+
+  <xacro:rh56dftp_hand side="${side_s}" prefix="${prefix_p}"/>
+  <xacro:rh56dftp_tactile_frames prefix="${prefix_p}"/>
+
+</robot>

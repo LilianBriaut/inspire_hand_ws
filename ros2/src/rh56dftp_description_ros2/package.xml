@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>rh56dftp_description</name>
+  <version>0.1.0</version>
+  <description>
+    ament wrapper exposing the framework-agnostic ../../rh56dftp_description
+    package (URDF/xacro/meshes/tactile layout of the Inspire Hand RH56DFTP)
+    to ROS 2. It installs the sibling directory content verbatim under
+    share/rh56dftp_description so that the existing xacro references
+    ($(find rh56dftp_description), package://rh56dftp_description/meshes/...)
+    resolve. The wrapped package itself is intentionally NOT an ament package
+    (it is consumed ROS-free by Pinocchio/MuJoCo in h1v2-imitation) and must
+    not be modified — this wrapper only re-publishes it.
+  </description>
+  <maintainer email="lilian.briaut@gmail.com">Lilian Briaut</maintainer>
+  <!-- Wrapped content: MIT (adapted from ookkshirsagar/rh56dfx_description,
+       see installed LICENSE and NOTICE). This wrapper: MIT as well. -->
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

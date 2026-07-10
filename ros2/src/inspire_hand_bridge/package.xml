@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>inspire_hand_bridge</name>
+  <version>0.1.0</version>
+  <description>
+    Plain ROS 2 &lt;-&gt; DDS bridge for the Inspire Hand RH56DFTP (motor control +
+    tactile skin). Translates the existing production DDS topics
+    (rt/inspire_hand/{ctrl,state,touch}/{l,r}, served by the Modbus-to-DDS
+    driver in inspire_hand_ws/inspire_hand_sdk) to:
+      - a sensor_msgs/JointState command topic (target position in radians,
+        by joint name) -&gt; a single DDS ctrl write per message (no trajectory
+        controller; the hand firmware generates the motion);
+      - a full sensor_msgs/JointState /joint_states topic (actuated + mimic +
+        wrist) for robot_state_publisher / TF / RViz;
+      - 17 per-region tactile topics (sensor_msgs/Image, mono16), one per
+        region of rh56dftp_description/tactile/tactile_layout.yaml.
+    No ros2_control. The bridge never talks Modbus itself: the DDS driver stays
+    the single writer to the hardware (no concurrent command path).
+
+    Extra Python dependencies without a rosdep key (see README):
+    cyclonedds==0.10.2 and inspire_sdkpy (the DDS type definitions), which
+    must be importable by the Python running ROS 2 (Python 3.12 for Jazzy).
+  </description>
+  <maintainer email="lilian.briaut@gmail.com">Lilian Briaut</maintainer>
+  <license>MIT</license>
+
+  <depend>rclpy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>tf2_ros</depend>
+
+  <exec_depend>rh56dftp_description</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

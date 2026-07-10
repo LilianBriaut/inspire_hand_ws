@@ -1,0 +1,6 @@
+# External source dependencies (vcstool format):  vcs import src < deps.repos
+#
+# None. The bridge no longer uses ros2_control, so the previous source
+# dependencies (topic_based_hardware_interfaces / joint_state_topic_hardware_interface
+# and ros2_control_cmake) have been removed. Nothing to import.
+repositories: {}
