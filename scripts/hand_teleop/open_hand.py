@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     cmd = inspire_hand_defaut.get_inspire_hand_ctrl()
     cmd.mode = 1
-    cmd.angle_set = [00, 000, 00, 1000, 100, 1000]
+    cmd.angle_set = [1000, 1000, 1000, 600, 500, 0]
 
     print("En attente des deux drivers...")
     while not (driver_l_connected and driver_r_connected):

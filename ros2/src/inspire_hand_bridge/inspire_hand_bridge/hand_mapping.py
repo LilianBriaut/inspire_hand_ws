@@ -11,6 +11,15 @@ URDF convention: lower limit (0) = open, upper limit = closed (flexion).
 The conversion is linear between those two anchors — the same approximation
 used by the existing teleop pipeline (InspireHand_policy._compute_hand_cmd).
 
+Opening percentage (the unit the bridge's joint_command topic speaks, see
+bridge_node): 0 % = closed, 100 % = open, i.e. ANGLE_SET / 10. Same anchors
+again, so 100 % maps to the URDF lower limit and 0 % to the upper limit. It
+exists because the URDF upper limit differs per joint (1.3443 rad for the four
+long fingers, 1.3104 for thumb_1, 0.5235 for thumb_2): "fully closed" has no
+single value in radians, which makes hand-written commands error-prone.
+Note this is the *opposite direction* from InspireHand_policy's closure_cmd
+(0 = open, 1 = closed).
+
 Beyond the 6 actuated joints, the hand has coupled distal phalanges declared
 as URDF <mimic> joints and two non-actuated wrist joints. Without ros2_control
 there is no joint_state_broadcaster to fill those in, so this module also
@@ -28,6 +37,7 @@ import yaml
 
 REGISTER_COUNT = 6
 REGISTER_MAX = 1000
+OPENING_PERCENT_MAX = 100.0
 
 
 @dataclass(frozen=True)
@@ -101,6 +111,16 @@ class HandMapping:
                 mimics[name] = (source, multiplier, offset)
                 mimic_order.append(name)
         return limits, mimics, mimic_order
+
+    def opening_to_radians(self, joint: str, percent: float) -> float:
+        """Map an opening percentage (0 = closed, 100 = open) -> URDF angle in rad.
+
+        Clamps out-of-range percentages, so the returned angle always sits inside
+        the joint's URDF limits.
+        """
+        entry = self._by_name[joint]
+        ratio = min(max(percent / OPENING_PERCENT_MAX, 0.0), 1.0)
+        return entry.upper - ratio * (entry.upper - entry.lower)
 
     def radians_to_registers(self, positions: dict[str, float]) -> list[int] | None:
         """Map {joint_name: rad} -> ANGLE_SET[6]. None if any of the 6 joints is missing."""

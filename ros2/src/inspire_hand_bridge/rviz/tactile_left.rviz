@@ -23,7 +23,7 @@ Visualization Manager:
       Description Source: Topic
       Description File: ""
       Description Topic:
-        Value: /rh56dftp/right/robot_description
+        Value: /rh56dftp/left/robot_description
         Depth: 1
         History Policy: Keep Last
         Reliability Policy: Reliable
@@ -43,7 +43,7 @@ Visualization Manager:
       Name: TactileCloud
       Enabled: true
       Topic:
-        Value: /rh56dftp/tactile/right/cloud
+        Value: /rh56dftp/tactile/left/cloud
         Depth: 5
         Durability Policy: Volatile
         Reliability Policy: Best Effort
@@ -56,7 +56,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: right_hand_root
+    Fixed Frame: left_hand_root
     Frame Rate: 30
   Name: root
   Tools:

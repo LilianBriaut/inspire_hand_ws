@@ -80,9 +80,16 @@ DDS consumer can map each published matrix onto a 3D frame.
 - ⚠️ The project brief quotes **1185** cells; that figure does not match the shipped
   register map. We follow the SDK (1062) and flag 1185 for hardware-datasheet
   verification (`../inspire_R1/*.pdf`).
-- **Frame placement is nominal** (frame at the parent-link origin). Precise
-  per-pad metric pose/orientation is deferred refinement pending the RH56DFTP
-  datasheet geometry.
+- **Frame placement is mesh-derived.** `tools/estimate_tactile_frames.py` fits,
+  per region and per side, the pad surface from the visual meshes (fingertip /
+  palm pads by PCA plane; wrap-around finger cushions by the palm-normal
+  direction) and writes pose + footprint to `tactile/pad_geometry.yaml`.
+  `tools/build.py` bakes those into each `_touch` joint `<origin>` (so the frame
+  Z axis is the outward surface normal), and the tactile point cloud sizes its
+  grid to the real footprint. Accuracy: sub-mm on tips, ~1–2 mm on phalanges, up
+  to ~1.5 cm at the palm corners (a flat grid approximating a curved rubber
+  surface). Re-run the estimator if the meshes change; delete
+  `pad_geometry.yaml` to fall back to the old nominal (origin) placement.
 
 ## What was reused / modified / added (vs. rh56dfx_description)
 

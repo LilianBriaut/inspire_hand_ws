@@ -7,11 +7,16 @@ that target itself. There is no trajectory interpolation here on purpose — a
 single DDS write per command, which is what makes the motion fluid.
 
 ROS side (per hand, topics namespaced by side):
-  - subscribes  <joint_command_topic>  (sensor_msgs/JointState, radians by name)
-    — target position for the 6 actuated joints (partial commands allowed once
-    state is flowing; send all 6 for fully deterministic control);
-  - publishes   <joint_states_topic>   (sensor_msgs/JointState) — the FULL 14-joint
-    state (actuated + mimic + wrist), for robot_state_publisher / TF / RViz;
+  - subscribes  <joint_command_topic>  (sensor_msgs/JointState, by name) — target
+    for the 6 actuated joints. `position` carries an OPENING PERCENTAGE in
+    [0, 100] (0 = closed, 100 = open, i.e. ANGLE_SET / 10), NOT radians: the
+    URDF upper limit differs per joint, so "closed" has no single value in rad.
+    Partial commands allowed once state is flowing; send all 6 for fully
+    deterministic control;
+  - publishes   <joint_states_topic>   (sensor_msgs/JointState, radians) — the FULL
+    14-joint state (actuated + mimic + wrist), for robot_state_publisher / TF / RViz.
+    State stays in radians because that is what robot_state_publisher requires;
+    the command/state units are therefore deliberately asymmetric;
   - publishes   <tactile_topic_prefix>/<region> (sensor_msgs/Image mono16),
     one topic per region of tactile_layout.yaml (17 regions).
 
@@ -39,7 +44,7 @@ from rclpy.qos import (
 from sensor_msgs.msg import Image, JointState
 
 from .dds_backend import InspireDds
-from .hand_mapping import HandMapping
+from .hand_mapping import OPENING_PERCENT_MAX, HandMapping
 from .tactile import load_regions, region_image
 
 CTRL_MODE_ANGLE = 0b0001
@@ -152,7 +157,7 @@ class InspireHandBridge(Node):
 
         self.get_logger().info(
             f"Bridge up: side={side} dds=rt/inspire_hand/*/{lr} (domain {domain_id}) "
-            f"command={command_topic} states={states_topic} "
+            f"command={command_topic} (opening %, 0=closed 100=open) states={states_topic} (rad) "
             f"tactile={'%s/<region> (%d regions)' % (tactile_prefix, len(self._regions)) if publish_tactile else 'off'}"
         )
 
@@ -161,14 +166,22 @@ class InspireHandBridge(Node):
     # ------------------------------------------------------------------
 
     def _on_joint_command(self, msg: JointState) -> None:
-        # Merge the finite target positions of actuated joints into self._targets.
+        # msg.position is an opening percentage (0 = closed, 100 = open), converted
+        # to radians here so that _targets stays in URDF units like the state path.
         # Non-actuated joints (mimic / wrist) in the message are ignored: they
         # are coupled or fixed, never commanded directly.
         updated = False
         for name, value in zip(msg.name, msg.position):
-            if name in self._actuated and math.isfinite(value):
-                self._targets[name] = value
-                updated = True
+            if name not in self._actuated or not math.isfinite(value):
+                continue
+            if not 0.0 <= value <= OPENING_PERCENT_MAX:
+                self.get_logger().warn(
+                    f"{name}: opening {value:.4g} outside [0, {OPENING_PERCENT_MAX:g}], clamping. "
+                    "This topic takes an opening percentage, not radians.",
+                    throttle_duration_sec=5.0,
+                )
+            self._targets[name] = self._mapping.opening_to_radians(name, value)
+            updated = True
         if not updated:
             return
 

@@ -28,13 +28,19 @@ from tf2_ros import Buffer, TransformException, TransformListener
 
 from .tactile import TactileRegion, load_regions
 
-TAXEL_PITCH_M = 0.0025  # local grid spacing between adjacent taxels (region pad ~= rows*cols*pitch)
+TAXEL_PITCH_M = 0.0025  # fallback spacing when pad_geometry.yaml has no real size
 
 
 def _region_local_points(region: TactileRegion) -> np.ndarray:
     # Grid centered on the region frame origin, in the frame's local XY plane.
-    ys = (np.arange(region.cols) - (region.cols - 1) / 2.0) * TAXEL_PITCH_M
-    xs = (np.arange(region.rows) - (region.rows - 1) / 2.0) * TAXEL_PITCH_M
+    # The _touch frame (from pad_geometry.yaml) has X along the rows axis, Y along
+    # the cols axis, Z = outward surface normal. Pitch is the real pad footprint
+    # divided across the grid, so the panel matches the physical pad; when the
+    # footprint is unknown, fall back to a uniform TAXEL_PITCH_M.
+    pitch_x = region.size_rows / (region.rows - 1) if region.size_rows and region.rows > 1 else TAXEL_PITCH_M
+    pitch_y = region.size_cols / (region.cols - 1) if region.size_cols and region.cols > 1 else TAXEL_PITCH_M
+    xs = (np.arange(region.rows) - (region.rows - 1) / 2.0) * pitch_x
+    ys = (np.arange(region.cols) - (region.cols - 1) / 2.0) * pitch_y
     xx, yy = np.meshgrid(xs, ys, indexing="ij")
     zz = np.zeros_like(xx)
     return np.stack([xx.ravel(), yy.ravel(), zz.ravel()], axis=1)  # (rows*cols, 3)

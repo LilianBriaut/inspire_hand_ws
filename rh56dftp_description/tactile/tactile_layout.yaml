@@ -35,14 +35,16 @@
 # FRAME PLACEMENT
 # ---------------
 # `parent_link` is the semantically closest existing URDF link (suffix only;
-# the real link is <prefix><parent_link>, e.g. left_index_tip). Frames are
-# anchored at the parent link origin (placement: nominal). Precise metric
-# pose/orientation of each pad on its link is deferred refinement pending the
-# RH56DFTP datasheet geometry — see README "Tactile frames".
+# the real link is <prefix><parent_link>, e.g. left_index_tip). The actual pad
+# pose on that link (position + orientation, Z = outward surface normal) and the
+# pad footprint are mesh-derived: tools/estimate_tactile_frames.py fits them from
+# the visual meshes into tactile/pad_geometry.yaml, and tools/build.py bakes the
+# pose into each _touch joint <origin>. If pad_geometry.yaml is absent, frames
+# fall back to the parent-link origin (the old nominal placement).
 # =============================================================================
 
 frame_suffix: _touch          # frame link name = <prefix><region>_touch (region = key below)
-placement: nominal            # frames sit at parent-link origin; refine against datasheet
+placement: mesh_derived       # pad pose/footprint from pad_geometry.yaml (tools/estimate_tactile_frames.py)
 
 regions:
   # ---- little / pinky (fingerone) ------------------------------------------

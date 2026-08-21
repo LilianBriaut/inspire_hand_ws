@@ -17,7 +17,7 @@ sur cette main il est redondant avec le firmware et rend le geste saccadé).
    commande (toi / script / MoveIt-exec adapté)              DDS (prod, inchangé)
 ┌──────────────────────┐  /rh56dftp/<side>/joint_command   ┌─────────────────┐
 │  ros2 topic pub …     │──────────────────────────────────►│                 │
-│  (JointState, rad)    │                                   │   bridge_node   │  rt/inspire_hand/ctrl/{l,r}
+│  (JointState, %)      │                                   │   bridge_node   │  rt/inspire_hand/ctrl/{l,r}
 └──────────────────────┘                                    │  (inspire_hand_ │─────────────────────────────►┌────────────────┐
                                                              │    bridge)      │◄─────────────────────────────│ inspire_hand_  │──► Modbus TCP
 ┌──────────────────────┐  /rh56dftp/<side>/joint_states     │                 │  rt/inspire_hand/state/{l,r} │ sdk (driver)   │    (main réelle)
@@ -80,14 +80,55 @@ Le launch ne démarre que deux nœuds : `robot_state_publisher` (URDF→TF) et
 python3 install/inspire_hand_bridge/share/inspire_hand_bridge/scripts/run_launch.py side:=left
 ```
 
+### Visualiser dans RViz (modèle + tactile)
+
+```bash
+ros2 launch inspire_hand_bridge rh56dftp.launch.py side:=left rviz:=true
+```
+
+`rviz:=true` ajoute deux nœuds : `tactile_cloud_node`, qui fusionne les 17 topics
+`Image` en un unique `PointCloud2` colorié (bleu = pas de contact → rouge =
+saturation) exprimé dans `<side>_hand_root`, et `rviz2` chargé avec
+`rviz/tactile_<side>.rviz` (RobotModel + TF + PointCloud2). Le nuage sort sur
+`/rh56dftp/tactile/<side>/cloud`.
+
+Le nuage seul, sans RViz (pour l'enregistrer dans un bag par exemple) :
+
+```bash
+ros2 launch inspire_hand_bridge rh56dftp.launch.py side:=left tactile_cloud:=true
+```
+
+Paramètre utile : `pressure_max` (défaut `200`) borne l'échelle de couleur en
+counts bruts. Si tous les taxels saturent en rouge, augmente-le ; s'ils restent
+bleus, baisse-le.
+
+Le nuage est **posé sur la surface des pads** : chaque frame `_touch` porte une
+pose dérivée des meshes (Z = normale de surface) et la grille est dimensionnée à
+l'emprise réelle du pad — pas un pas uniforme. Source :
+`rh56dftp_description/tactile/pad_geometry.yaml` (généré par
+`tools/estimate_tactile_frames.py`, baké dans les `<origin>` par `tools/build.py`).
+Précision : sub-mm sur les bouts de doigts, ~1–2 mm sur les phalanges, jusqu'à
+~1,5 cm aux coins de la paume (grille plane approximant une surface courbe).
+
+> Il faut que le **driver DDS de la main tourne**. `bridge_node` ne publie
+> `/joint_states` que lorsqu'il reçoit un état sur `rt/inspire_hand/state/{l,r}` ;
+> or les frames tactiles sont chacune derrière 4 joints mobiles (poignet + 2
+> phalanges du doigt), donc sans `/joint_states` `robot_state_publisher` ne place
+> ni les doigts ni les pads, et RViz affiche « No transform ». De même les points
+> tactiles viennent de `rt/inspire_hand/touch/{l,r}`. Bref, sans main réelle
+> connectée, RViz reste quasi vide — c'est attendu.
+
 ### Commander la main
+
+`position` est un **pourcentage d'ouverture** dans `[0, 100]` : `0` = fermé,
+`100` = grand ouvert. C'est exactement `angle_set / 10` (registre Inspire).
 
 ```bash
 # ouvre l'index, ferme les 3 autres doigts, pouce en opposition (mêmes valeurs
-# que open_hand.py : angle_set [0,0,0,1000,100,1000] converti en radians)
+# que open_hand.py : angle_set [0,0,0,1000,100,1000])
 ros2 topic pub --once /rh56dftp/left/joint_command sensor_msgs/msg/JointState '{
   name:     [left_little_1_joint, left_ring_1_joint, left_middle_1_joint, left_index_1_joint, left_thumb_2_joint, left_thumb_1_joint],
-  position: [1.3443,             1.3443,            1.3443,              0.0,                0.4711,             0.0]
+  position: [0,                   0,                 0,                   100,                10,                 100]
 }'
 ```
 
@@ -95,11 +136,24 @@ Commande partielle possible (un seul doigt) : les autres joints tiennent leur
 position courante — le nœud amorce ses cibles à partir du premier état mesuré.
 Envoie les 6 joints pour un contrôle pleinement déterministe.
 
+```bash
+# ferme l'index à moitié, laisse le reste où il est
+ros2 topic pub --once /rh56dftp/left/joint_command sensor_msgs/msg/JointState \
+  '{name: [left_index_1_joint], position: [50]}'
+```
+
+> **Attention** — `joint_command` prenait des radians avant ; il prend maintenant
+> des pourcentages. Les anciennes commandes en radians restent numériquement dans
+> `[0, 100]` et sont donc acceptées **sans erreur**, avec un sens inversé : `0.0`
+> voulait dire « grand ouvert », il veut maintenant dire « fermé ». Relis tes
+> scripts et tes bags avant de rejouer quoi que ce soit.
+
 ### Topics (par main)
 
 - `/rh56dftp/<side>/joint_command` — **commande** : `sensor_msgs/JointState`,
-  position cible en radians, appariée par nom (6 joints actionnés ; mimic et
-  poignets ignorés s'ils sont présents). Une commande = une écriture DDS.
+  `position` = pourcentage d'ouverture `[0, 100]` (0 = fermé, 100 = ouvert),
+  apparié par nom (6 joints actionnés ; mimic et poignets ignorés s'ils sont
+  présents). Hors bornes → clampé + WARN. Une commande = une écriture DDS.
 - `/rh56dftp/<side>/joint_states` — **état complet** : `sensor_msgs/JointState`
   des 14 joints (6 actionnés depuis les registres + 6 mimic calculés depuis
   l'URDF + 2 poignets à 0), publié par le nœud lui-même (plus de
@@ -109,16 +163,36 @@ Envoie les 6 joints pour un contrôle pleinement déterministe.
   `<side>_<region>_touch`, frame présente dans le TF). QoS/fréquence
   réglables par région via les params `tactile.<region>.{reliability,depth,throttle_hz}`
   du nœud bridge.
+- `/rh56dftp/tactile/<side>/cloud` — `sensor_msgs/PointCloud2` (XYZ+RGB), fusion
+  des 17 régions dans `<side>_hand_root`. Publié uniquement si
+  `tactile_cloud:=true` ou `rviz:=true`. C'est ce que la config RViz affiche.
+
+`/tf` et `/tf_static` restent **globaux** (tf2 utilise des noms absolus) ; seul
+`robot_description` est namespacé, d'où le topic absolu dans les configs RViz.
 
 ### Conversion d'unités
 
-registres Inspire `[pinky, ring, middle, index, thumb_bend, thumb_rot]`,
-0 = fermé / 1000 = ouvert ↔ radians URDF (0 = ouvert / limite sup = fermé),
-mapping linéaire sur les limites de l'URDF — mêmes conventions que
-`InspireHand_policy._compute_hand_cmd` (téléop). Sources de vérité :
-`rh56dftp_description/config/actuator_mapping.yaml` + URDF (parsés au
-démarrage, aucune table dupliquée). Les mimic (multiplicateur/offset) sont lus
-directement dans les balises `<mimic>` de l'URDF.
+Trois unités, deux ancres. Les ancres sont les limites URDF du joint :
+`lower` = ouvert, `upper` = fermé. Tout est linéaire entre les deux.
+
+| Unité | Ouvert | Fermé | Où |
+|---|---|---|---|
+| registre Inspire `angle_set` | `1000` | `0` | DDS |
+| ouverture % | `100` | `0` | `joint_command` |
+| radians URDF | `lower` (0) | `upper` | `joint_states`, TF |
+
+Le pourcentage existe parce que `upper` **diffère par joint** — `1.3443` rad pour
+les quatre doigts longs, `1.3104` pour `thumb_1`, `0.5235` pour `thumb_2` : « fermé »
+n'a pas de valeur unique en radians, ce qui rend les commandes à la main pénibles.
+L'état reste en radians car `robot_state_publisher` l'exige ; l'asymétrie
+commande (%) / état (rad) est donc voulue.
+
+Attention au sens : `InspireHand_policy._compute_hand_cmd` (téléop) manipule un
+`closure_cmd` **inverse** (0 = ouvert, 1 = fermé), qu'il invertit avant l'`angle_set`.
+
+Sources de vérité : `rh56dftp_description/config/actuator_mapping.yaml` + URDF
+(parsés au démarrage, aucune table dupliquée). Les mimic (multiplicateur/offset)
+sont lus directement dans les balises `<mimic>` de l'URDF.
 
 ## Notes / limitations connues
 

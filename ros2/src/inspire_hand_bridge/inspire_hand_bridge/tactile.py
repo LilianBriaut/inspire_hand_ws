@@ -28,6 +28,11 @@ class TactileRegion:
     cols: int
     taxels: int
     frame_id: str
+    # Physical pad footprint in metres (size along the rows axis, along the cols
+    # axis), from tactile/pad_geometry.yaml. None when that file is absent, in
+    # which case consumers fall back to a global taxel pitch.
+    size_rows: float | None = None
+    size_cols: float | None = None
 
 
 def load_regions(description_share: str | Path, prefix: str) -> list[TactileRegion]:
@@ -35,12 +40,20 @@ def load_regions(description_share: str | Path, prefix: str) -> list[TactileRegi
     with open(layout_yaml) as f:
         layout = yaml.safe_load(f)
 
+    # Optional mesh-derived pad footprints (size_m: [rows_axis, cols_axis]).
+    geom_yaml = Path(description_share) / "tactile" / "pad_geometry.yaml"
+    geom = {}
+    if geom_yaml.exists():
+        with open(geom_yaml) as f:
+            geom = (yaml.safe_load(f) or {}).get("regions", {})
+
     frame_suffix = layout.get("frame_suffix", "_touch")
     regions = []
     for name, spec in layout["regions"].items():
         rows, cols = spec["grid"]
         if rows * cols != spec["taxels"]:
             raise ValueError(f"Region {name}: grid {rows}x{cols} != taxels {spec['taxels']}")
+        size = geom.get(name, {}).get("size_m")
         regions.append(
             TactileRegion(
                 name=name,
@@ -49,6 +62,8 @@ def load_regions(description_share: str | Path, prefix: str) -> list[TactileRegi
                 cols=cols,
                 taxels=spec["taxels"],
                 frame_id=f"{prefix}{name}{frame_suffix}",
+                size_rows=(float(size[0]) if size else None),
+                size_cols=(float(size[1]) if size else None),
             )
         )
 

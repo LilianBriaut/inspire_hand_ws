@@ -2742,118 +2742,118 @@
   <joint name="left_little_tip_touch_joint" type="fixed">
     <parent link="left_little_tip"/>
     <child link="left_little_tip_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="-0.000812 2.4e-05 -0.000398" rpy="0.255094 -0.004 -1.5708"/>
   </joint>
   <!-- little_top: dds=fingerone_top_touch grid=12x8 (96 taxels) modbus=3018 -->
   <link name="left_little_top_touch"/>
   <joint name="left_little_top_touch_joint" type="fixed">
     <parent link="left_little_2"/>
     <child link="left_little_top_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.009995 0.021982 -0.005127" rpy="1.58072 -0.001387 1.27055"/>
   </joint>
   <!-- little_palm: dds=fingerone_palm_touch grid=10x8 (80 taxels) modbus=3210 -->
   <link name="left_little_palm_touch"/>
   <joint name="left_little_palm_touch_joint" type="fixed">
     <parent link="left_little_1"/>
     <child link="left_little_palm_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.009383 0.013453 -0.005911" rpy="1.58054 -0.002672 1.38726"/>
   </joint>
   <!-- ring_tip: dds=fingertwo_tip_touch grid=3x3 (9 taxels) modbus=3370 -->
   <link name="left_ring_tip_touch"/>
   <joint name="left_ring_tip_touch_joint" type="fixed">
     <parent link="left_ring_tip"/>
     <child link="left_ring_tip_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="-0.00113 -2e-06 -0.000481" rpy="-0.267417 -0.000505 1.57457"/>
   </joint>
   <!-- ring_top: dds=fingertwo_top_touch grid=12x8 (96 taxels) modbus=3388 -->
   <link name="left_ring_top_touch"/>
   <joint name="left_ring_top_touch_joint" type="fixed">
     <parent link="left_ring_2"/>
     <child link="left_ring_top_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.012935 0.029408 -0.005459" rpy="1.58966 -0.002735 1.27581"/>
   </joint>
   <!-- ring_palm: dds=fingertwo_palm_touch grid=10x8 (80 taxels) modbus=3580 -->
   <link name="left_ring_palm_touch"/>
   <joint name="left_ring_palm_touch_joint" type="fixed">
     <parent link="left_ring_1"/>
     <child link="left_ring_palm_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.009466 0.013563 -0.005878" rpy="1.58851 -0.002672 1.38726"/>
   </joint>
   <!-- middle_tip: dds=fingerthree_tip_touch grid=3x3 (9 taxels) modbus=3740 -->
   <link name="left_middle_tip_touch"/>
   <joint name="left_middle_tip_touch_joint" type="fixed">
     <parent link="left_middle_tip"/>
     <child link="left_middle_tip_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="-0.000786 -6e-06 -0.000433" rpy="-0.321407 0.004647 1.58354"/>
   </joint>
   <!-- middle_top: dds=fingerthree_top_touch grid=12x8 (96 taxels) modbus=3758 -->
   <link name="left_middle_top_touch"/>
   <joint name="left_middle_top_touch_joint" type="fixed">
     <parent link="left_middle_2"/>
     <child link="left_middle_top_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.014045 0.031523 -0.005277" rpy="1.59534 0.002946 1.26895"/>
   </joint>
   <!-- middle_palm: dds=fingerthree_palm_touch grid=10x8 (80 taxels) modbus=3950 -->
   <link name="left_middle_palm_touch"/>
   <joint name="left_middle_palm_touch_joint" type="fixed">
     <parent link="left_middle_1"/>
     <child link="left_middle_palm_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.009387 0.013617 -0.005896" rpy="1.59643 -0.002672 1.38726"/>
   </joint>
   <!-- index_tip: dds=fingerfour_tip_touch grid=3x3 (9 taxels) modbus=4110 -->
   <link name="left_index_tip_touch"/>
   <joint name="left_index_tip_touch_joint" type="fixed">
     <parent link="left_index_tip"/>
     <child link="left_index_tip_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="-0.00113 -2e-06 -0.000481" rpy="-0.267417 -0.000505 1.57457"/>
   </joint>
   <!-- index_top: dds=fingerfour_top_touch grid=12x8 (96 taxels) modbus=4128 -->
   <link name="left_index_top_touch"/>
   <joint name="left_index_top_touch_joint" type="fixed">
     <parent link="left_index_2"/>
     <child link="left_index_top_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.01281 0.028816 -0.005389" rpy="1.60342 -0.002735 1.27581"/>
   </joint>
   <!-- index_palm: dds=fingerfour_palm_touch grid=10x8 (80 taxels) modbus=4320 -->
   <link name="left_index_palm_touch"/>
   <joint name="left_index_palm_touch_joint" type="fixed">
     <parent link="left_index_1"/>
     <child link="left_index_palm_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.009346 0.01361 -0.005947" rpy="1.60167 -0.002672 1.38726"/>
   </joint>
   <!-- thumb_tip: dds=fingerfive_tip_touch grid=3x3 (9 taxels) modbus=4480 -->
   <link name="left_thumb_tip_touch"/>
   <joint name="left_thumb_tip_touch_joint" type="fixed">
     <parent link="left_thumb_tip"/>
     <child link="left_thumb_tip_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="1e-05 -0.002125 -0.00081" rpy="0.026243 0.37045 -1.53966"/>
   </joint>
   <!-- thumb_top: dds=fingerfive_top_touch grid=12x8 (96 taxels) modbus=4498 -->
   <link name="left_thumb_top_touch"/>
   <joint name="left_thumb_top_touch_joint" type="fixed">
     <parent link="left_thumb_4"/>
     <child link="left_thumb_top_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.006829 0.009674 0.010979" rpy="-0.105254 0.01018 0.928269"/>
   </joint>
   <!-- thumb_middle: dds=fingerfive_middle_touch grid=3x3 (9 taxels) modbus=4690 -->
   <link name="left_thumb_middle_touch"/>
   <joint name="left_thumb_middle_touch_joint" type="fixed">
     <parent link="left_thumb_3"/>
     <child link="left_thumb_middle_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.011762 0.006056 0.013736" rpy="-0.109716 -0.006889 0.947256"/>
   </joint>
   <!-- thumb_palm: dds=fingerfive_palm_touch grid=12x8 (96 taxels) modbus=4708 -->
   <link name="left_thumb_palm_touch"/>
   <joint name="left_thumb_palm_touch_joint" type="fixed">
     <parent link="left_thumb_2"/>
     <child link="left_thumb_palm_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.016579 0.028298 0.014575" rpy="-0.030962 -0.007901 0.658301"/>
   </joint>
   <!-- palm: dds=palm_touch grid=14x8 (112 taxels) modbus=4900 -->
   <link name="left_palm_touch"/>
   <joint name="left_palm_touch_joint" type="fixed">
     <parent link="left_palm"/>
     <child link="left_palm_touch"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.00018 -0.006891 9.4e-05" rpy="0.14087 0.035477 2.73397"/>
   </joint>
 </robot>

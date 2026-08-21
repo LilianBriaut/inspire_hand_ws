@@ -42,6 +42,6 @@
   <!-- ================= INSTANTIATE HAND + TACTILE SKIN ================= -->
 
   <xacro:rh56dftp_hand side="${side_s}" prefix="${prefix_p}"/>
-  <xacro:rh56dftp_tactile_frames prefix="${prefix_p}"/>
+  <xacro:rh56dftp_tactile_frames prefix="${prefix_p}" side="${side_s}"/>
 
 </robot>
